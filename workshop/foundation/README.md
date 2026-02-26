@@ -418,18 +418,18 @@ kubectl delete -f simple-constraint.yaml
 ### ✅ Success Criteria
 
 Your foundation setup is complete when:
-- [ ] All monitoring pods are in "Running" state
-- [ ] All gatekeeper pods are in "Running" state
-- [ ] Grafana dashboard is accessible at `http://<workspace-name>.coder:3000`
-- [ ] Metrics Server pod is in "Running" state
-- [ ] `kubectl top nodes` returns resource metrics
-- [ ] You can login to Grafana with admin/admin123
-- [ ] Constraint template `k8srequiredlabels` exists
-- [ ] Constraint `ns-must-have-gk` is active
-- [ ] Creating namespace without required label fails
-- [ ] Creating namespace with required label succeeds
-- [ ] Resource usage is reasonable (< 80% memory)
-- [ ] Remove constraint `ns-must-have-gk` after you finish testing
+- [x] All monitoring pods are in "Running" state
+- [x] All gatekeeper pods are in "Running" state
+- [x] Grafana dashboard is accessible at http://localhost:3000
+- [x] Metrics Server pod is in "Running" state
+- [x] `kubectl top nodes` returns resource metrics
+- [x] You can login to Grafana with admin/admin123
+- [x] Constraint template `k8srequiredlabels` exists
+- [x] Constraint `ns-must-have-gk` is active
+- [x] Creating namespace without required label fails
+- [x] Creating namespace with required label succeeds
+- [x] Resource usage is reasonable (< 80% memory)
+- [x] Remove constraint `ns-must-have-gk` after you finish testing
 
 ## 🚨 Troubleshooting
 
