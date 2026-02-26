@@ -26,6 +26,7 @@ grafana:
       memory: 512Mi
       cpu: 500m
   adminPassword: admin123
+  readOnlyRootFilesystem: true
   service:
     type: NodePort
     nodePort: 30300

@@ -23,11 +23,14 @@
     "flannel"
   ]
 
+# Namespace exception list
+- list: root_namespace_exceptions
+  items: ["kube-system", "kube-public", "falco-system"]
 # Macro to define exceptions
 - macro: user_known_root_container_exceptions
   condition: >
     (container.image.repository in (root_container_exceptions)) or
-    (k8s.ns.name in ("kube-system", "kube-public", "falco-system"))
+    (k8s.ns.name in (root_namespace_exceptions))
 
 # Additional rule for detecting root process execution in non-system namespaces
 - rule: Root Process in User Namespace
@@ -36,7 +39,7 @@
     spawned_process and
     container and
     user.uid = 0 and
-    not k8s.ns.name in ("kube-system", "kube-public", "falco-system", "default") and
+    not k8s.ns.name in (root_process_namespace_exceptions) and
     not user_known_root_container_exceptions
   output: >
     Root process detected in user namespace (user=%user.name uid=%user.uid command=%proc.cmdline
@@ -44,3 +47,37 @@
     namespace=%k8s.ns.name)
   priority: CRITICAL
   tags: [container, root, security, namespace]
+- list: root_process_namespace_exceptions
+  items: ["kube-system", "kube-public", "falco-system", "default"]
+
+# Catch nc and other tools
+- macro: container
+  condition: container.id != host
+- macro: spawned_process
+  condition: (evt.type in (execve, execveat))
+- rule: Suspicious Network Activity
+  desc: Detect unexpected network connections
+  condition: >
+    spawned_process and container and
+    proc.name in (nc, telnet, ncat) and
+    not proc.args contains "allowed_host"
+  output: >
+    Suspicious network tool executed (user=%user.name container=%container.name
+    image=%container.image.repository proc=%proc.cmdline)
+  priority: WARNING
+
+# Open a file 
+- macro: file_open
+  condition: >
+    (evt.type=open or evt.type=openat) and
+    fd.typechar='f'
+- macro: is_secure_dir
+  condition: >
+    fd.directory in (secure_dir)
+- list: secure_dir
+  items: ["/etc"]
+#- rule: open_in_secure_dir
+#  desc: an attempt to open any file below a set of secure directories
+#  condition: file_open and is_secure_dir
+#  output: "File below a known secure directory opened | user=%user.name command=%proc.cmdline file=%fd.name"
+#  priority: WARNING
