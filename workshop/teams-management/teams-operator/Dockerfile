@@ -7,10 +7,10 @@ RUN groupadd -r teamsop -g 1001 && \
     useradd -u 1001 -r -g teamsop -m -d /app -s /sbin/nologin -c "Teams operator user" teamsop
 
 # Copy requirements first to leverage Docker cache
-COPY operator-requirements.txt .
+COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r operator-requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy operator code
 COPY teams_operator.py .

@@ -1,8 +1,8 @@
 export const environment = {
   production: false,
-  apiUrl: "http://teams-api.127.0.0.1.sslip.io", // Use proxy path instead of direct URL
+  apiUrl: "http://teams-api-service:8080", // Use proxy path instead of direct URL
   keycloak: {
-    url: "http://platform-auth.127.0.0.1.sslip.io",
+    url: "http://localhost:4444",
     realm: "teams",
     clientId: "teams-ui",
   },

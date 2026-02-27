@@ -68,10 +68,11 @@ spec:
           type: RuntimeDefault
       containers:
       - name: teams-operator
-        image: olivercodes01/teams-operator:0.0.1
+        image: localhost:5001/teams-operator:latest
+        imagePullPolicy: Always
         env:
         - name: TEAMS_API_URL
-          value: "http://teams-api-service.engineering-platform.svc.cluster.local:4200"
+          value: "http://teams-api-service:8080"
         - name: POLL_INTERVAL
           value: "30"
         securityContext:

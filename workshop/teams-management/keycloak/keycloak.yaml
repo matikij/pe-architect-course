@@ -101,12 +101,14 @@ spec:
           value: keycloak
         - name: KC_DB_PASSWORD
           value: keycloak
-        - name: KC_HOSTNAME
-          value: platform-auth.127.0.0.1.sslip.io
+        - name: KC_HOSTNAME_URL
+          value: http://localhost:4444
         - name: KC_HOSTNAME_STRICT
           value: "false"
         - name: KC_HTTP_ENABLED
           value: "true"
+        - name: KC_HTTPS_ENABLED
+          value: "false"
         - name: KC_HOSTNAME_STRICT_HTTPS
           value: "false"
         - name: KC_HTTP_CORS_ENABLED
@@ -219,7 +221,7 @@ data:
           "publicClient": true,
           "protocol": "openid-connect",
           "attributes": {
-            "post.logout.redirect.uris": "http://platform-auth.127.0.0.1.sslip.io/*##http://localhost:4200/*"
+            "post.logout.redirect.uris": "http://localhost:4444/*##http://localhost:4200/*"
           }
         }
       ],

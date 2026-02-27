@@ -20,11 +20,19 @@ spec:
         app: teams-ui
         component: frontend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: teams-ui
-        image: olivercodes01/teams-app:0.0.7
+        image: localhost:5001/teams-ui:latest
+        imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         env:
         - name: API_URL
           value: "http://teams-api-service:4200"
@@ -38,12 +46,12 @@ spec:
         livenessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: 8080
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /health
-            port: 80
+            port: 8080
           initialDelaySeconds: 5
           periodSeconds: 5

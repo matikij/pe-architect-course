@@ -14,8 +14,9 @@ NC='\033[0m' # No Color
 
 # Configuration
 NAMESPACE="engineering-platform"
-UI_IMAGE="teams-ui:latest"
-API_IMAGE="teams-api:latest"
+UI_IMAGE="localhost:5001/teams-ui:latest"
+API_IMAGE="localhost:5001/teams-api:latest"
+OPERATOR_IMAGE="localhost:5001/teams-operator:latest"
 
 # Functions
 log_info() {
@@ -88,17 +89,30 @@ build_images() {
 
     # Build UI image
     log_info "Building UI Docker image..."
-    docker build -t $UI_IMAGE .
+    docker build -t $UI_IMAGE ../teams-app
 
     # Build API image (assuming API Dockerfile exists)
-    if [ -f "api.Dockerfile" ]; then
-        log_info "Building API Docker image..."
-        docker build -f api.Dockerfile -t $API_IMAGE .
-    else
-        log_warning "API Dockerfile not found. Make sure API image is available"
-    fi
+    log_info "Building API Docker image..."
+    docker build -t $API_IMAGE ../teams-api
+
+    # Build Operator image
+    log_info "Building Operator Docker image..."
+    docker build -t $OPERATOR_IMAGE ../teams-operator
 
     log_success "Docker images built successfully"
+}
+
+push_images() {
+    log_info "Pushing Docker images..."
+
+    log_info "Pushing UI Docker image..."
+    docker push $UI_IMAGE
+
+    log_info "Pushing API Docker image..."
+    docker push $API_IMAGE
+
+    log_info "Pushing Operator Docker image..."
+    docker push $OPERATOR_IMAGE
 }
 
 # Deploy to Kubernetes
@@ -116,7 +130,7 @@ deploy_k8s() {
 
     # Wait for deployments to be ready
     log_info "Waiting for deployments to be ready..."
-    kubectl wait --for=condition=available --timeout=300s deployment/teams-ui deployment/teams-api -n $NAMESPACE
+    kubectl wait --for=condition=available --timeout=300s deployment/teams-ui deployment/teams-api deployment/teams-operator -n $NAMESPACE
 
     log_success "Deployments are ready"
 }
@@ -167,8 +181,9 @@ deploy() {
 
     check_kubectl
     check_docker
-    build_ui
+    #build_ui
     build_images
+    push_images
     deploy_k8s
     check_status
 

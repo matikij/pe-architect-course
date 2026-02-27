@@ -18,9 +18,17 @@ spec:
         app: teams-api
         component: backend
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: teams-api
-        image: teams-api:latest
+        image: localhost:5001/teams-api:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:

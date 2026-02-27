@@ -18,6 +18,7 @@ spec:
     exemptImages:
       - "registry.k8s.io/"
       - "gcr.io/distroless/"
+      - "localhost:5001/teams-ui"
     exemptUsers:
       - "1000"
       - "65534"
